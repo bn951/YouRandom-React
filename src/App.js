@@ -8,25 +8,21 @@ import { Row } from 'react-bootstrap';
 import { Col } from 'react-bootstrap';
 import Video from './Video';
 import Description from './Description'
+import Settings from './Settings';
 import 'whatwg-fetch';
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      categoryID: 0,
-      modalVisibility: false
+      categoryID: 0
     };
     this.execRequest = this.execRequest.bind(this);
-  }
-
-  setModalVisibility() {
-    this.state.modalVisibility == false ? this.setState({modalVisibility: true}) : this.setState({modalVisibility: false});
+    this.setCategory = this.setCategory.bind(this);
   }
 
   execRequest() {
     let that = this;
-    //fetch("https://www.googleapis.com/youtube/v3/videos?part=snippet&chart=mostPopular&regionCode=us&videoCategoryId=0&maxResults=50&fields=items(contentDetails%2Cid%2Csnippet)&key=AIzaSyAG6QJDbA_oM94AIB618d4cQcjikQlWBQY").then(function(response) {
     fetch("https://www.googleapis.com/youtube/v3/videos?part=snippet&chart=mostPopular&regionCode=us&videoCategoryId=" + this.state.categoryID + "&maxResults=50&fields=items(contentDetails%2Cid%2Csnippet)&key=AIzaSyAG6QJDbA_oM94AIB618d4cQcjikQlWBQY").then(function(response) {
       return response.json();
     }).then(function(json) {
@@ -42,6 +38,12 @@ class App extends Component {
     });
 
     console.log("https://www.googleapis.com/youtube/v3/videos?part=snippet&chart=mostPopular&regionCode=us&videoCategoryId=" + this.state.categoryID + "&maxResults=50&fields=items(contentDetails%2Cid%2Csnippet)&key=AIzaSyAG6QJDbA_oM94AIB618d4cQcjikQlWBQY");
+  }
+
+  setCategory(catID) {
+    this.setState({
+      categoryID: catID
+    }, this.execRequest);
   }
 
   componentDidMount() {
@@ -60,7 +62,7 @@ class App extends Component {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav pullRight>
-              <NavItem eventKey={1}>Settings</NavItem>
+              <NavItem eventKey={1}><Settings categoryID={this.state.categoryID} setCategory={this.setCategory} execRequest={this.execRequest}></Settings></NavItem>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
